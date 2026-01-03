@@ -111,18 +111,15 @@ Cell-level protein expression predictions
 
 **Requirements**  
 
-Key dependencies include:
-
-PyTorch 2.0
-
-TorchVision
-
-Scanpy / Squidpy
-
-Scikit-learn
-
-NumPy / Pandas / SciPy
-
+Key dependencies include:  
+PyTorch 2.0  
+TorchVision  
+Scanpy  
+Squidpy  
+Scikit-learn  
+NumPy  
+Pandas  
+SciPy  
 See requirements.txt for the full list.
 
 
