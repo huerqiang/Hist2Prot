@@ -44,7 +44,7 @@ Cell segmentation is performed externally (e.g., HoVerNet).
 Histo2Prot does not include segmentation inference, and directly reads segmentation results.
 
 
-**Quality Control (QC)**  
+**Quality Control**  
 
 The preprocessing pipeline follows these steps:
 
