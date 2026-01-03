@@ -1,13 +1,13 @@
-Histo2Prot: Single-Cell Spatial Profiling of the Tumor Microenvironment from Histology Using Deep Learning
+**Histo2Prot: Single-Cell Spatial Profiling of the Tumor Microenvironment from Histology Using Deep Learning**
 
 Histo2Prot is a deep learning framework for inferring single-cell–resolved spatial proteomic profiles from routine whole-slide histopathology (H&E) images.
 The method integrates cell-level morphology, cell–cell spatial topology, and multi-task learning to reconstruct protein expression landscapes across the tumor microenvironment (TME).
 
-Framework Overview
+**Framework Overview**
 ![Histo2Prot](Figures/FIgure1.svg)
 
 
-Repository Structure
+**Repository Structure**
 
 Histo2Prot  
 ├── DataProcess.py       
@@ -19,7 +19,7 @@ Histo2Prot
 
 
 
-Data Preparation
+**Data Preparation**
 
 Input Data
 
@@ -42,7 +42,7 @@ Cell segmentation is performed externally (e.g., HoVerNet).
 Histo2Prot does not include segmentation inference, and directly reads segmentation results.
 
 
-Quality Control (QC)  
+**Quality Control (QC)**  
 
 The preprocessing pipeline follows these steps:
 
@@ -63,7 +63,7 @@ Low-information regions
 The resulting paired H&E patches + single-cell protein profiles form the final dataset.
 
 
-Training  
+**Training**  
 Step 1: Install Dependencies
 pip install -r requirements.txt
 
@@ -88,7 +88,7 @@ Training loss curves
 Hyperparameter configuration (YAML)
 
 
-Inference  
+**Inference**  
 
 After training, you can predict spatial proteomics on new H&E slides:
 
@@ -107,7 +107,7 @@ Cell-level protein expression predictions
 
 
 
-Requirements  
+**Requirements**  
 
 Key dependencies include:
 
@@ -124,7 +124,7 @@ NumPy / Pandas / SciPy
 See requirements.txt for the full list.
 
 
-Applications
+**Applications**
 
 Spatial proteomics reconstruction
 
