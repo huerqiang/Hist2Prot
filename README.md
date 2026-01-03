@@ -3,6 +3,10 @@ Histo2Prot: Single-Cell Spatial Profiling of the Tumor Microenvironment from His
 Histo2Prot is a deep learning framework for inferring single-cell–resolved spatial proteomic profiles from routine whole-slide histopathology (H&E) images.
 The method integrates cell-level morphology, cell–cell spatial topology, and multi-task learning to reconstruct protein expression landscapes across the tumor microenvironment (TME).
 
+Framework Overview  
+![GitHub Logo](https://github.com/Jsf826/Hist2Prot/tree/main/Figures/1.jpg)
+
+
 
 Repository Structure
 
