@@ -44,7 +44,7 @@ Histo2Prot/
 
 ## Step 1: WSI Segmentation (External)
 
-Before running the Histo2Prot pipeline, you must segment the Whole Slide Images (WSIs) to obtain cell/nuclei masks.
+Segmenting the Whole Slide Images (WSIs) to obtain nuclei masks.
 
 * **Tool:** We utilize **HoVerNet** for simultaneous nuclear segmentation and classification.
 * **Source:** [HoVerNet GitHub Repository](https://github.com/vqdang/hover_net)
@@ -52,7 +52,7 @@ Before running the Histo2Prot pipeline, you must segment the Whole Slide Images 
     1.  Install HoVerNet following their official instructions.
     2.  Run inference on your raw H&E slides.
     3.  Save the output as **`.npy`** files (instance-level maps).
-* **Example Usage:**
+* **Run:**
     ```bash
     # Run HoVerNet inference (refer to the official repository for specific arguments)
     python run_infer.py \
