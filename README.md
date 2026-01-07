@@ -42,8 +42,32 @@ Histo2Prot/
 
 * Python (3.8+), PyTorch (≥ 2.0), TorchVision
 
+## Step 1: WSI Segmentation (External)
 
-## Step 1: Data Preparation and Preprocessing
+Before running the Histo2Prot pipeline, you must segment the Whole Slide Images (WSIs) to obtain cell/nuclei masks.
+
+* **Tool:** We utilize **HoVerNet** for simultaneous nuclear segmentation and classification.
+* **Source:** [HoVerNet GitHub Repository](https://github.com/vqdang/hover_net)
+* **Procedure:**
+    1.  Install HoVerNet following their official instructions.
+    2.  Run inference on your raw H&E slides.
+    3.  Save the output as **`.npy`** files (instance-level maps).
+* **Example Usage:**
+    ```bash
+    # Run HoVerNet inference (refer to the official repository for specific arguments)
+    python run_infer.py \
+      --gpu='0' \
+      --model_path=hovernet_fast_panoptic.tar \
+      --nr_inference_workers=4 \
+      --input_dir=/path/to/raw_wsis \
+      --output_dir=/path/to/segmentation_results \
+      --save_json=False \
+      --save_mask=True
+    ```
+
+Whole-slide H&E images: Stained on the same tissue section as molecular profiling.
+
+## Step 2: Data Preparation and Preprocessing
 Input Data Organization:
 
 Whole-slide H&E images: Stained on the same tissue section as molecular profiling.
@@ -66,37 +90,38 @@ Tile filtering: Removal of background-dominated tiles and exclusion of low-infor
 
 Final dataset: Constructs paired H&E patches with corresponding single-cell protein expression profiles.
 
-## Step 2: Train Histo2Prot
+## Step 3: Train Histo2Prot
 Install Dependencies:
 
 Bash
 
 pip install -r requirements.txt
 Run Training: Start the training pipeline. The model utilizes multi-task loss across protein targets and GPU acceleration via PyTorch Lightning.
-
+```
 Bash
 
 python train.py
+```
 Optimization: Multi-task loss across protein targets.
 
 Regularization: Early stopping to prevent overfitting.
 
 Outputs: Trained model checkpoints, training loss curves, and hyperparameter configurations (YAML).
 
-Step 3: Inference
+## Step 4: Inference
 Run Inference: Apply the trained model to unseen H&E slides.
 
-`Bash
+```Bash
 
 python inference.py
-`
+```
 Model loading: Automatically loads trained Histo2Prot weights.
 
 Inputs: H&E image patches and corresponding segmentation masks.
 
 Outputs: Cell-level protein expression predictions and spatial proteomic maps across tissue regions.
 
-🎯 Applications
+## 🎯 Applications
 Virtual spatial proteomics reconstruction
 
 Tumor microenvironment (TME) profiling
