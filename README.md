@@ -23,7 +23,6 @@ Hist2Prot integrates **cell-level morphological representations**, **cell–cell
 
 ## 📁 Repository Structure
 
-```text
 Histo2Prot/
 ├── DataProcess.py        # Data preprocessing and feature construction
 ├── model.py              # Hist2Prot model architecture
