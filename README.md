@@ -43,7 +43,7 @@ Histo2Prot/
 * Python (3.8+), PyTorch (≥ 2.0), TorchVision
 
 
-Step 1: Data Preparation and Preprocessing
+## Step 1: Data Preparation and Preprocessing
 Input Data Organization:
 
 Whole-slide H&E images: Stained on the same tissue section as molecular profiling.
