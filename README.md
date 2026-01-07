@@ -34,15 +34,14 @@ Histo2Prot/
 
 
 
-**Data Preparation**
-
+📦 Data Preparation
 Input Data
-
-Histo2Prot assumes the following inputs:
 
 Whole-slide H&E images
 
-Precomputed cell/nuclei segmentation results
+Cell / nuclei segmentation results
+
+Precomputed externally
 
 Stored as .npy files
 
@@ -53,97 +52,117 @@ Single-cell protein expression matrix
 Used as regression targets during training
 
 Note
-Cell segmentation is performed externally (HoVerNet).  
-Histo2Prot does not include segmentation inference, and directly reads segmentation results.
 
+Cell segmentation is performed using HoVerNet
 
-**Quality Control**  
+Hist2Prot does not include a segmentation inference module
 
-The preprocessing pipeline follows these steps:
+Segmentation results are directly consumed as input
 
-H&E staining performed on the same tissue section as molecular profiling
+🧪 Quality Control and Preprocessing
 
-Color normalization to reduce batch/staining variability
+H&E staining:
+
+Performed on the same tissue section as molecular profiling
+
+Image normalization:
+
+Color normalization applied to reduce staining variability
+
+Tissue processing:
 
 Automatic tissue detection on whole-slide images
 
 Tiling into non-overlapping 20× patches
 
-Exclusion of:
+Tile filtering:
 
-Background-dominated tiles
+Removal of background-dominated tiles
 
-Low-information regions
+Exclusion of low-information or artifact-prone regions
 
-The resulting paired H&E patches + single-cell protein profiles form the final dataset.
+Final dataset:
 
+Paired H&E patches
 
-**Training**  
+Corresponding single-cell protein expression profiles
+
+🚀 Training
 Step 1: Install Dependencies
 pip install -r requirements.txt
 
-Step 2: Run Training  
+Step 2: Run Training
 python train.py
 
 
-The training script includes:  
+Optimization:
 
-Multi-task loss optimization
+Multi-task loss across protein targets
 
-Early stopping
+Regularization:
 
-GPU acceleration (PyTorch Lightning)
+Early stopping to prevent overfitting
 
-Automatic saving of:
+Acceleration:
 
-Model weights
+GPU support via PyTorch Lightning
+
+Outputs:
+
+Trained model checkpoints
 
 Training loss curves
 
-Hyperparameter configuration (YAML)
+Hyperparameter configurations (YAML)
 
-
-**Inference**  
-
-After training, you can predict spatial proteomics on new H&E slides:
-
+🔍 Inference
 python inference.py
 
 
-The inference pipeline:
+Model loading:
 
-Loads trained Histo2Prot model
+Loads trained Hist2Prot weights
 
-Reads H&E patches + segmentation masks
+Inputs:
+
+H&E image patches
+
+Corresponding segmentation masks
 
 Outputs:
 
 Cell-level protein expression predictions
 
+Spatial proteomic maps across tissue regions
 
+⚙️ Requirements
 
-**Requirements**  
+PyTorch ≥ 2.0
 
-Key dependencies include:  
-PyTorch 2.0  
-TorchVision  
-Scanpy  
-Squidpy  
-Scikit-learn  
-NumPy  
-Pandas  
-SciPy  
-See requirements.txt for the full list.
+TorchVision
 
+Scanpy
 
-**Applications**
+Squidpy
 
-Spatial proteomics reconstruction
+Scikit-learn
+
+NumPy
+
+Pandas
+
+SciPy
+
+See requirements.txt for the complete dependency list.
+
+🎯 Applications
+
+Virtual spatial proteomics reconstruction
 
 Tumor microenvironment (TME) profiling
 
 Digital pathology–omics integration
 
-Biomarker discovery
+Spatial biomarker discovery
 
-Retrospective cohort analysis from archived H&E slides
+Retrospective analysis of archived H&E cohorts
