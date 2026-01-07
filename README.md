@@ -51,7 +51,7 @@ Segmenting the Whole Slide Images (WSIs) to obtain nuclei masks.
 * **Procedure:**
     1.  Install HoVerNet following their official instructions.
     2.  Run inference on your raw H&E slides.
-    3.  Save the output as **`.npy`** files (instance-level maps).
+    3.  Save the output as **`.npy`** files.
 * **Run:**
     ```bash
     # Run HoVerNet inference (refer to the official repository for specific arguments)
@@ -95,13 +95,13 @@ After obtaining the segmentation results (from Step 0), organize your data and r
     ```
 
 * **Run Training:**
-    Start the training pipeline. The model utilizes multi-task loss across protein targets and supports GPU acceleration via **PyTorch Lightning**.
+    Start the training pipeline.
     ```bash
     python train.py
     ```
     * **Optimization:** Multi-task loss applied across protein targets.
     * **Regularization:** Implements early stopping to prevent overfitting.
-    * **Outputs:** Trained model checkpoints, training loss curves, and hyperparameter configurations (YAML).
+    * **Outputs:** Trained model checkpoints.
 
 ## Step 4: Inference
 * **Run Inference:**
