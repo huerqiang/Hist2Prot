@@ -65,61 +65,54 @@ Segmenting the Whole Slide Images (WSIs) to obtain nuclei masks.
       --save_mask=True
     ```
 
-Whole-slide H&E images: Stained on the same tissue section as molecular profiling.
 
 ## Step 2: Data Preparation and Preprocessing
-Input Data Organization:
 
-Whole-slide H&E images: Stained on the same tissue section as molecular profiling.
+After obtaining the segmentation results (from Step 0), organize your data and run the preprocessing pipeline.
 
-Segmentation results: Cell/nuclei segmentation results stored as .npy files (each file contains instance-level cell masks).
+* **Input Data Organization:**
+    * **Whole-slide H&E images:** Must be stained on the same tissue section used for molecular profiling.
+    * **Segmentation results:** Cell/nuclei segmentation masks stored as **`.npy`** files (each file contains instance-level cell masks).
+    * **Single-cell protein expression matrix:** Used as regression targets during training.
 
-Single-cell protein expression matrix: Used as regression targets during training.
+> **Note:** Cell segmentation is performed externally using **HoVerNet**. Histo2Prot does not include a segmentation inference module; segmentation results are directly consumed as input.
 
-> Note: Cell segmentation is performed externally using HoVerNet. Histo2Prot does not include a segmentation inference module; segmentation results are directly consumed as input.
-
-Quality Control & Preprocessing:
-
-Run DataProcess.py to handle the data pipeline.
-
-Image normalization: Color normalization applied to reduce staining variability.
-
-Tissue processing: Automatic tissue detection on whole-slide images and tiling into non-overlapping 20× patches.
-
-Tile filtering: Removal of background-dominated tiles and exclusion of low-information or artifact-prone regions.
-
-Final dataset: Constructs paired H&E patches with corresponding single-cell protein expression profiles.
+* **Quality Control & Preprocessing:**
+    Run the main processing script to handle the pipeline:
+    ```bash
+    python DataProcess.py
+    ```
+    * **Image normalization:** Color normalization is applied to reduce staining variability.
+    * **Tissue processing:** Performs automatic tissue detection on whole-slide images and tiles them into non-overlapping **20× patches**.
+    * **Tile filtering:** Removes background-dominated tiles and excludes low-information or artifact-prone regions.
+    * **Final dataset:** Constructs paired H&E patches with corresponding single-cell protein expression profiles, topology_features, neighbor_labels and tissue type.
+    * 
 
 ## Step 3: Train Histo2Prot
-Install Dependencies:
+* **Install Dependencies:**
+    First, ensure all required libraries are installed:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Bash
-
-pip install -r requirements.txt
-Run Training: Start the training pipeline. The model utilizes multi-task loss across protein targets and GPU acceleration via PyTorch Lightning.
-```
-Bash
-
-python train.py
-```
-Optimization: Multi-task loss across protein targets.
-
-Regularization: Early stopping to prevent overfitting.
-
-Outputs: Trained model checkpoints, training loss curves, and hyperparameter configurations (YAML).
+* **Run Training:**
+    Start the training pipeline. The model utilizes multi-task loss across protein targets and supports GPU acceleration via **PyTorch Lightning**.
+    ```bash
+    python train.py
+    ```
+    * **Optimization:** Multi-task loss applied across protein targets.
+    * **Regularization:** Implements early stopping to prevent overfitting.
+    * **Outputs:** Trained model checkpoints, training loss curves, and hyperparameter configurations (YAML).
 
 ## Step 4: Inference
-Run Inference: Apply the trained model to unseen H&E slides.
-
-```Bash
-
-python inference.py
-```
-Model loading: Automatically loads trained Histo2Prot weights.
-
-Inputs: H&E image patches and corresponding segmentation masks.
-
-Outputs: Cell-level protein expression predictions and spatial proteomic maps across tissue regions.
+* **Run Inference:**
+    Apply the trained model to unseen H&E slides.
+    ```bash
+    python inference.py
+    ```
+    * **Model loading:** Automatically loads trained Histo2Prot weights.
+    * **Inputs:** H&E image patches and corresponding segmentation masks.
+    * **Outputs:** Cell-level protein expression predictions and spatial proteomic maps across tissue regions.
 
 ## 🎯 Applications
 Virtual spatial proteomics reconstruction
