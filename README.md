@@ -1,136 +1,125 @@
-**AI-enabled Virtual Spatial Proteomics of Single-Cell Tumor Microenvironment from Histology**
+# Pan-cancer Virtual Spatial Proteomics of Single-cell Tumor Microenvironment from Histology
 
-We present an AI-enabled virtual spatial proteomics framework (Hist2Prot) designed to computationally generate single-cell–resolved spatial proteomic profiles directly from standard hematoxylin and eosin (H\&E) histopathology slides.
-The method integrates cell-level morphology, cell–cell spatial topology, and multi-task learning to reconstruct protein expression landscapes across the tumor microenvironment (TME).
+This repository provides the official implementation of **Hist2Prot**, an AI-enabled virtual spatial proteomics framework that computationally reconstructs **single-cell–resolved spatial protein expression profiles** directly from standard hematoxylin and eosin (H&E) histopathology slides.
 
-**Framework Overview**  
-<div align="center">
-  <img src="Figures/Figure1.svg" width="80%">
-</div>
+Hist2Prot integrates **cell-level morphological representations**, **cell–cell spatial topology**, and **multi-task learning** to infer high-dimensional protein expression landscapes across the tumor microenvironment (TME).
 
+---
 
-**Repository Structure**
+## 🔬 Framework Overview
 
-Histo2Prot  
-├── DataProcess.py       
-├── model.py             
-├── train.py    
-├── inference.py    
-├── requirements.txt   
+<p align="center">
+  <img src="Figures/Figure1.svg" width="70%">
+</p>
+
+- Operates at the **single-cell level**
+- Inputs:
+  - H&E histopathology images
+  - Precomputed cell segmentation masks
+- Outputs:
+  - Spatially resolved, cell-level protein expression profiles
+
+---
+
+## 📁 Repository Structure
+```
+Histo2Prot/
+├── DataProcess.py        # Data preprocessing and feature construction
+├── model.py              # Hist2Prot model architecture
+├── train.py              # Model training pipeline
+├── inference.py          # Inference on unseen H&E slides
+├── requirements.txt      # Dependency list
 └── README.md
+```
+
+## Dependencies:
+
+**Hardware:**
+
+* NVIDIA A6000 GPU (*8) with CUDA support for PyTorch Lightning acceleration.
+
+**Software:**
+
+* Python (3.8+), PyTorch (≥ 2.0), TorchVision
+
+## Step 1: WSI Segmentation
+
+Segmenting the Whole Slide Images (WSIs) to obtain nuclei masks.
+
+* **Tool:** We utilize **HoVerNet** for simultaneous nuclear segmentation and classification.
+* **Source:** [HoVerNet GitHub Repository](https://github.com/vqdang/hover_net)
+* **Procedure:**
+    1.  Install HoVerNet following their official instructions.
+    2.  Run inference on your raw H&E slides.
+    3.  Save the output as **`.npy`** files.
+* **Run:**
+    ```bash
+    # Run HoVerNet inference (refer to the official repository for specific arguments)
+    python run_infer.py \
+      --gpu='0' \
+      --model_path=hovernet_fast_panoptic.tar \
+      --nr_inference_workers=4 \
+      --input_dir=/path/to/raw_wsis \
+      --output_dir=/path/to/segmentation_results \
+      --save_json=False \
+      --save_mask=True
+    ```
 
 
+## Step 2: Data Preparation and Preprocessing
 
-**Data Preparation**
+After obtaining the segmentation results (from Step 0), organize your data and run the preprocessing pipeline.
 
-Input Data
+* **Input Data Organization:**
+    * **Whole-slide H&E images:** Must be stained on the same tissue section used for molecular profiling.
+    * **Segmentation results:** Cell/nuclei segmentation masks stored as **`.npy`** files (each file contains instance-level cell masks).
+    * **Single-cell protein expression matrix:** Used as regression targets during training.
 
-Histo2Prot assumes the following inputs:
+> **Note:** Cell segmentation is performed externally using **HoVerNet**. Histo2Prot does not include a segmentation inference module; segmentation results are directly consumed as input.
 
-Whole-slide H&E images
+* **Quality Control & Preprocessing:**
+    Run the main processing script to handle the pipeline:
+    ```bash
+    python DataProcess.py
+    ```
+    * **Image normalization:** Color normalization is applied to reduce staining variability.
+    * **Tissue processing:** Performs automatic tissue detection on whole-slide images and tiles them into non-overlapping **20× patches**.
+    * **Tile filtering:** Removes background-dominated tiles and excludes low-information or artifact-prone regions.
+    * **Final dataset:** Constructs paired H&E patches with corresponding single-cell protein expression profiles, topology_features, neighbor_labels and tissue type.
 
-Precomputed cell/nuclei segmentation results
+## Step 3: Train Histo2Prot
+* **Install Dependencies:**
+    First, ensure all required libraries are installed:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-Stored as .npy files
+* **Run Training:**
+    Start the training pipeline.
+    ```bash
+    python train.py
+    ```
+    * **Optimization:** Multi-task loss applied across protein targets.
+    * **Regularization:** Implements early stopping to prevent overfitting.
+    * **Outputs:** Trained model checkpoints.
 
-Each file contains instance-level cell masks
+## Step 4: Inference
+* **Run Inference:**
+    Apply the trained model to unseen H&E slides.
+    ```bash
+    python inference.py
+    ```
+    * **Model loading:** Automatically loads trained Histo2Prot weights.
+    * **Inputs:** H&E image patches and corresponding segmentation masks.
+    * **Outputs:** Cell-level protein expression predictions and spatial proteomic maps across tissue regions.
 
-Single-cell protein expression matrix
-
-Used as regression targets during training
-
-Note
-Cell segmentation is performed externally (HoVerNet).  
-Histo2Prot does not include segmentation inference, and directly reads segmentation results.
-
-
-**Quality Control**  
-
-The preprocessing pipeline follows these steps:
-
-H&E staining performed on the same tissue section as molecular profiling
-
-Color normalization to reduce batch/staining variability
-
-Automatic tissue detection on whole-slide images
-
-Tiling into non-overlapping 20× patches
-
-Exclusion of:
-
-Background-dominated tiles
-
-Low-information regions
-
-The resulting paired H&E patches + single-cell protein profiles form the final dataset.
-
-
-**Training**  
-Step 1: Install Dependencies
-pip install -r requirements.txt
-
-Step 2: Run Training  
-python train.py
-
-
-The training script includes:  
-
-Multi-task loss optimization
-
-Early stopping
-
-GPU acceleration (PyTorch Lightning)
-
-Automatic saving of:
-
-Model weights
-
-Training loss curves
-
-Hyperparameter configuration (YAML)
-
-
-**Inference**  
-
-After training, you can predict spatial proteomics on new H&E slides:
-
-python inference.py
-
-
-The inference pipeline:
-
-Loads trained Histo2Prot model
-
-Reads H&E patches + segmentation masks
-
-Outputs:
-
-Cell-level protein expression predictions
-
-
-
-**Requirements**  
-
-Key dependencies include:  
-PyTorch 2.0  
-TorchVision  
-Scanpy  
-Squidpy  
-Scikit-learn  
-NumPy  
-Pandas  
-SciPy  
-See requirements.txt for the full list.
-
-
-**Applications**
-
-Spatial proteomics reconstruction
+## 🎯 Applications
+Virtual spatial proteomics reconstruction
 
 Tumor microenvironment (TME) profiling
 
 Digital pathology–omics integration
 
-Biomarker discovery
+Spatial biomarker discovery
 
-Retrospective cohort analysis from archived H&E slides
+Retrospective analysis of archived H&E cohorts
